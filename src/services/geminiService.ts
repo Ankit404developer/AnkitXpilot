@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_KEY = 'AIzaSyCusdqOdgOwr4a5iqRkyTc84WWqcV53Hqc'; // In production, use environment variables
+const API_KEY = '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'; // In production, use environment variables
 const API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.0-pro:generateContent';
 
 // Default system prompt that instructs the model about its persona
