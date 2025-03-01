@@ -19,6 +19,8 @@ export async function sendMessage(message: string, generateCode = false): Promis
       promptText = `Please provide only code as a solution to this request. Ensure the code is well-commented, efficient, and follows best practices: ${message}`;
     }
     
+    console.log('Sending request to Gemini API:', API_URL);
+    
     const response = await axios.post(
       `${API_URL}?key=${API_KEY}`,
       {
@@ -40,18 +42,33 @@ export async function sendMessage(message: string, generateCode = false): Promis
       }
     );
 
+    console.log('Received response from Gemini API');
+    
     // Extract text from the response
-    const textResponse = response.data.candidates[0].content.parts[0].text;
-    return textResponse || 'I apologize, but I couldn\'t generate a response.';
+    if (response.data && 
+        response.data.candidates && 
+        response.data.candidates[0] && 
+        response.data.candidates[0].content && 
+        response.data.candidates[0].content.parts && 
+        response.data.candidates[0].content.parts[0]) {
+      
+      const textResponse = response.data.candidates[0].content.parts[0].text;
+      return textResponse || 'I apologize, but I couldn\'t generate a response.';
+    } else {
+      console.error('Unexpected API response structure:', response.data);
+      return 'I received an unexpected response format. Please try again.';
+    }
     
   } catch (error) {
     console.error('Error calling Gemini API:', error);
     
     if (axios.isAxiosError(error) && error.response) {
+      console.error('API error details:', error.response.data);
+      
       if (error.response.status === 429) {
         return 'I\'m receiving too many requests right now. Please try again in a moment.';
       } else {
-        return `An error occurred: ${error.response.data.error.message || 'Unknown error'}`;
+        return `An error occurred: ${error.response.data.error?.message || JSON.stringify(error.response.data) || 'Unknown error'}`;
       }
     }
     
