@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API_KEY = 'AIzaSyCusdqOdgOwr4a5iqRkyTc84WWqcV53Hqc'; // In production, use environment variables
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.0-pro:generateContent';
 
 // Default system prompt that instructs the model about its persona
 const SYSTEM_PROMPT = `You are AnkitXpilot, a helpful and knowledgeable AI assistant created by Ankit Pramanik. 
