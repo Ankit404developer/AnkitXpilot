@@ -111,6 +111,18 @@ export default {
 				},
 				'blink': {
 					'50%': { borderColor: 'transparent' }
+				},
+				'glow': {
+					'0%, 100%': { 
+						boxShadow: '0 0 5px rgba(var(--primary-rgb), 0.5), 0 0 10px rgba(var(--primary-rgb), 0.3)' 
+					},
+					'50%': { 
+						boxShadow: '0 0 15px rgba(var(--primary-rgb), 0.8), 0 0 20px rgba(var(--primary-rgb), 0.5)' 
+					}
+				},
+				'shimmer': {
+					'0%': { backgroundPosition: '-500px 0' },
+					'100%': { backgroundPosition: '500px 0' }
 				}
 			},
 			animation: {
@@ -122,7 +134,9 @@ export default {
 				'pulse-subtle': 'pulse-subtle 1.5s ease-in-out infinite',
 				'float': 'float 3s ease-in-out infinite',
 				'typing': 'typing 2s steps(40, end)',
-				'blink': 'blink 0.7s step-end infinite'
+				'blink': 'blink 0.7s step-end infinite',
+				'glow': 'glow 2s ease-in-out infinite',
+				'shimmer': 'shimmer 2s linear infinite'
 			},
 			transitionDuration: {
 				'2000': '2000ms',

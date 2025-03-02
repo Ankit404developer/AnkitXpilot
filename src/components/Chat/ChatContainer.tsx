@@ -28,22 +28,22 @@ const ChatContainer: React.FC = () => {
         {currentSession.messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="glass p-6 rounded-2xl max-w-md animate-fade-in">
-              <h2 className="text-xl font-medium mb-2">Welcome to AnkitXpilot</h2>
+              <h2 className="text-xl font-medium mb-2 text-gradient">Welcome to AnkitXpilot</h2>
               <p className="text-muted-foreground mb-4">
                 Your personal AI assistant powered by Google Gemini.
                 How can I help you today?
               </p>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer">
+                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer transition-all hover:scale-105">
                   "Write a React component"
                 </div>
-                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer">
+                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer transition-all hover:scale-105">
                   "Explain promises in JavaScript"
                 </div>
-                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer">
+                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer transition-all hover:scale-105">
                   "Help debug my code"
                 </div>
-                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer">
+                <div className="p-3 bg-muted rounded-lg hover:bg-muted/80 cursor-pointer transition-all hover:scale-105">
                   "Who made you?"
                 </div>
               </div>

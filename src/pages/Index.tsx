@@ -9,13 +9,15 @@ const Index = () => {
   React.useEffect(() => {
     const hasVisited = localStorage.getItem('ankitxpilot-visited');
     if (!hasVisited) {
-      toast.success(
-        'Welcome to AnkitXpilot!', 
-        {
-          description: 'Your personal AI assistant is ready to help.',
-        }
-      );
-      localStorage.setItem('ankitxpilot-visited', 'true');
+      setTimeout(() => {
+        toast.success(
+          'Welcome to AnkitXpilot!', 
+          {
+            description: 'Your personal AI assistant is ready to help.',
+          }
+        );
+        localStorage.setItem('ankitxpilot-visited', 'true');
+      }, 800);
     }
   }, []);
 

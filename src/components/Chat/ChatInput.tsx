@@ -44,7 +44,7 @@ const ChatInput: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative">
+    <form onSubmit={handleSubmit} className="relative animate-fade-in-up">
       <div className={`relative flex items-end rounded-2xl border bg-background shadow-sm transition-all duration-300 ${isLoading ? 'opacity-80' : ''} ${generateCode ? 'ring-2 ring-primary ring-opacity-50' : ''}`}>
         <textarea
           ref={textareaRef}
@@ -60,7 +60,7 @@ const ChatInput: React.FC = () => {
           <button
             type="button"
             onClick={toggleCodeMode}
-            className={`p-1.5 rounded-full transition-colors ${generateCode 
+            className={`p-1.5 rounded-full transition-all hover:scale-105 ${generateCode 
               ? 'bg-primary text-primary-foreground' 
               : 'text-muted-foreground hover:bg-muted'}`}
             title={generateCode ? "Code mode active" : "Toggle code mode"}
@@ -70,7 +70,7 @@ const ChatInput: React.FC = () => {
           <button
             type="submit"
             disabled={!message.trim() || isLoading}
-            className="p-1.5 rounded-full bg-primary text-primary-foreground transition-opacity disabled:opacity-50"
+            className="p-1.5 rounded-full bg-primary text-primary-foreground transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
           >
             <Send size={18} />
           </button>
@@ -78,7 +78,7 @@ const ChatInput: React.FC = () => {
       </div>
       
       {generateCode && (
-        <div className="mt-1 text-xs text-muted-foreground">
+        <div className="mt-1 text-xs text-muted-foreground animate-fade-in">
           Code mode active: Optimized for generating code snippets
         </div>
       )}
