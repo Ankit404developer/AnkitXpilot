@@ -128,8 +128,15 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (message.toLowerCase().includes("who made you") || 
           message.toLowerCase().includes("who created you")) {
         responseText = "Ankit Pramanik, A Web Developer and AI Trainer made me.";
+      } else if (
+        message.toLowerCase().includes("who is ankit") ||
+        message.toLowerCase().includes("who's ankit") ||
+        message.toLowerCase().includes("tell me about ankit") ||
+        message.toLowerCase().includes("about ankit")
+      ) {
+        responseText = "Ankit is a web developer and AI Trainer who knows various coding languages. To know more about him reach https://ankit404developer.github.io/About/";
       } else {
-        // Send message to the Gemini API
+        // Send message to the AI API
         responseText = await sendMessage(message, generateCode);
       }
 
