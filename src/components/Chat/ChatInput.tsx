@@ -3,7 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '../../contexts/ChatContext';
 import { Send, Code } from 'lucide-react';
 
-const ChatInput: React.FC = () => {
+interface ChatInputProps {
+  placeholderText?: string;
+}
+
+const ChatInput: React.FC<ChatInputProps> = ({ placeholderText = "Ask anything to AnkitXpilot..." }) => {
   const [message, setMessage] = useState('');
   const [generateCode, setGenerateCode] = useState(false);
   const { sendUserMessage, isLoading } = useChat();
@@ -51,7 +55,7 @@ const ChatInput: React.FC = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={generateCode ? "Give a html code" : "Message ChatGPT..."}
+          placeholder={generateCode ? "Give a html code" : placeholderText}
           disabled={isLoading}
           rows={1}
           className="w-full resize-none bg-transparent py-3 pl-4 pr-14 text-white placeholder:text-zinc-500 focus:outline-none disabled:opacity-50 scrollbar-thin rounded-3xl"
