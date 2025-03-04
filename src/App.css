@@ -2,7 +2,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
 }
 
@@ -43,6 +43,47 @@
 }
 
 /* Dark mode support */
-html.dark {
+html {
   color-scheme: dark;
+  background-color: #000000;
+}
+
+body {
+  background-color: #000000;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Code styling */
+.code-token-tag {
+  color: #569CD6;
+}
+
+.code-token-attr-name {
+  color: #9CDCFE;
+}
+
+.code-token-attr-value {
+  color: #CE9178;
+}
+
+.code-token-string {
+  color: #CE9178;
+}
+
+.code-token-keyword {
+  color: #C586C0;
+}
+
+.code-token-comment {
+  color: #6A9955;
+}
+
+.code-token-property {
+  color: #4EC9B0;
+}
+
+.code-token-value {
+  color: #B5CEA8;
 }

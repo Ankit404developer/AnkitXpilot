@@ -45,24 +45,24 @@ const ChatInput: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="relative animate-fade-in-up">
-      <div className={`relative flex items-end rounded-2xl border bg-background shadow-sm transition-all duration-300 ${isLoading ? 'opacity-80' : ''} ${generateCode ? 'ring-2 ring-primary ring-opacity-50' : ''}`}>
+      <div className={`relative flex items-end rounded-3xl bg-zinc-800 shadow-sm transition-all duration-300 ${isLoading ? 'opacity-80' : ''} ${generateCode ? 'ring-1 ring-primary ring-opacity-50' : ''}`}>
         <textarea
           ref={textareaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={generateCode ? "Describe the code you need..." : "Type a message..."}
+          placeholder={generateCode ? "Give a html code" : "Message ChatGPT..."}
           disabled={isLoading}
           rows={1}
-          className="w-full resize-none bg-transparent py-3 pl-4 pr-14 text-foreground focus:outline-none disabled:opacity-50 scrollbar-thin"
+          className="w-full resize-none bg-transparent py-3 pl-4 pr-14 text-white placeholder:text-zinc-500 focus:outline-none disabled:opacity-50 scrollbar-thin rounded-3xl"
         />
-        <div className="absolute right-2 bottom-3 flex gap-1">
+        <div className="absolute right-2 bottom-2.5 flex gap-1">
           <button
             type="button"
             onClick={toggleCodeMode}
-            className={`p-1.5 rounded-full transition-all hover:scale-105 ${generateCode 
-              ? 'bg-primary text-primary-foreground' 
-              : 'text-muted-foreground hover:bg-muted'}`}
+            className={`p-1.5 rounded-full transition-all hover:bg-zinc-700 ${generateCode 
+              ? 'text-primary' 
+              : 'text-zinc-400 hover:text-zinc-200'}`}
             title={generateCode ? "Code mode active" : "Toggle code mode"}
           >
             <Code size={18} />
@@ -70,7 +70,7 @@ const ChatInput: React.FC = () => {
           <button
             type="submit"
             disabled={!message.trim() || isLoading}
-            className="p-1.5 rounded-full bg-primary text-primary-foreground transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+            className="p-1.5 rounded-full bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 disabled:hover:bg-primary"
           >
             <Send size={18} />
           </button>
@@ -78,7 +78,7 @@ const ChatInput: React.FC = () => {
       </div>
       
       {generateCode && (
-        <div className="mt-1 text-xs text-muted-foreground animate-fade-in">
+        <div className="mt-1 text-xs text-zinc-500 animate-fade-in">
           Code mode active: Optimized for generating code snippets
         </div>
       )}

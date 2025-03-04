@@ -16,13 +16,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const contentParts = parseCodeBlocks(message.text);
   
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
-      <div className={`flex gap-3 max-w-[85%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-        {/* Avatar */}
-        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-          ${isUser ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-          {isUser ? <User size={16} /> : <Bot size={16} />}
-        </div>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
+      <div className={`flex gap-2 max-w-[90%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* Avatar - hidden for cleaner UI like the reference */}
+        {false && (
+          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
+            ${isUser ? 'bg-primary text-primary-foreground' : 'bg-zinc-800 text-zinc-300'}`}>
+            {isUser ? <User size={16} /> : <Bot size={16} />}
+          </div>
+        )}
         
         {/* Message content */}
         <div className={`${isUser ? 'user-message' : 'assistant-message'}`}>
@@ -35,7 +37,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               )}
             </React.Fragment>
           ))}
-          <span className="block mt-1 text-right text-xs text-muted-foreground">
+          <span className="block mt-1 text-right text-xs text-zinc-500">
             {formatTimestamp(message.timestamp)}
           </span>
         </div>
