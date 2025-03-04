@@ -34,9 +34,11 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
         </button>
         
         <div className="flex items-center ml-2 md:ml-0">
-          <div className="bg-primary/10 p-1.5 rounded-md mr-2 animate-glow">
-            <Bot size={22} className="text-primary" />
-          </div>
+          <img 
+            src="/lovable-uploads/b515ad26-d888-4adf-a07b-fd0894cbdb25.png" 
+            alt="AnkitXpilot Logo" 
+            className="h-8 w-auto mr-2" 
+          />
           <h1 className="text-lg font-medium animate-fade-in">AnkitXpilot</h1>
         </div>
       </div>

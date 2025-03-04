@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { useChat } from '../../contexts/ChatContext';
 import ChatMessage from './ChatMessage';
@@ -29,6 +28,9 @@ const ChatContainer: React.FC = () => {
         {currentSession.messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="p-6 rounded-2xl max-w-md animate-fade-in bg-zinc-900">
+              <div className="flex justify-center mb-4">
+                <img src="/lovable-uploads/b515ad26-d888-4adf-a07b-fd0894cbdb25.png" alt="AnkitXpilot Logo" className="h-20 w-auto" />
+              </div>
               <h2 className="text-xl font-medium mb-2 text-white">Welcome to AnkitXpilot</h2>
               <p className="text-zinc-400 mb-4">
                 Your personal AI assistant powered by Google Gemini.
@@ -84,7 +86,7 @@ const ChatContainer: React.FC = () => {
       
       {/* Chat input container */}
       <div className="p-3 bg-zinc-900 border-t border-zinc-800">
-        <ChatInput />
+        <ChatInput placeholderText="Ask anything to AnkitXpilot..." />
       </div>
     </div>
   );
