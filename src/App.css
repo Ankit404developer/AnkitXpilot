@@ -60,6 +60,14 @@ body {
   color: #0FA0CE; /* Matching the cyan accent in the logo */
 }
 
+/* Mobile responsive padding */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 /* Code styling */
 .code-token-tag {
   color: #569CD6;

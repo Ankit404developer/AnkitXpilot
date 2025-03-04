@@ -20,7 +20,7 @@ export async function sendMessage(message: string, generateCode = false): Promis
       promptText = `Please provide only code as a solution to this request. Ensure the code is well-commented, efficient, and follows best practices: ${message}`;
     }
     
-    console.log('Sending request to OpenRouter API');
+    console.log('Sending request to API');
     
     const response = await axios.post(
       API_URL,
@@ -47,7 +47,7 @@ export async function sendMessage(message: string, generateCode = false): Promis
       }
     );
 
-    console.log('Received response from OpenRouter API');
+    console.log('Received response from API');
     
     // Extract text from the response
     if (response.data && 
@@ -63,7 +63,7 @@ export async function sendMessage(message: string, generateCode = false): Promis
     }
     
   } catch (error) {
-    console.error('Error calling OpenRouter API:', error);
+    console.error('Error calling API:', error);
     
     if (axios.isAxiosError(error) && error.response) {
       console.error('API error details:', error.response.data);

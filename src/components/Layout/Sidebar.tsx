@@ -81,8 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
         )}
         
         <div className="p-4 border-t text-xs text-center text-muted-foreground">
-          <p>Powered by Google Gemini API</p>
-          <p className="mt-1">Created by Ankit Pramanik</p>
+          <p>Created by Ankit Pramanik</p>
         </div>
       </div>
     </aside>

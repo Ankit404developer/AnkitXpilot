@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
         
         <div className="flex items-center ml-2 md:ml-0">
           <img 
-            src="/lovable-uploads/b515ad26-d888-4adf-a07b-fd0894cbdb25.png" 
+            src="/lovable-uploads/05f99f3c-fe9b-4793-9f67-9083446e0cb5.png" 
             alt="AnkitXpilot Logo" 
             className="h-8 w-auto mr-2" 
           />
