@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
-import { Bot, Menu, X, Plus, Moon, Sun, Laptop, Share2, Clock, Brain, Trash } from 'lucide-react';
+import { Bot, Menu, X, Plus, Moon, Sun, Laptop, Share2, Clock, Brain, Trash, MemoryStick } from 'lucide-react';
 import { useChat } from '../../contexts/ChatContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { toast } from 'sonner';
+import MemoryManager from '../Memory/MemoryManager';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,6 +41,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isTempChatOpen, setIsTempChatOpen] = useState(false);
   const [isClearMemoryOpen, setIsClearMemoryOpen] = useState(false);
+  const [isMemoryManagerOpen, setIsMemoryManagerOpen] = useState(false);
   
   const handleNewChat = () => {
     createNewSession();
@@ -103,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
           
           <div className="flex items-center ml-2 md:ml-0">
             <img 
-              src="/lovable-uploads/05f99f3c-fe9b-4793-9f67-9083446e0cb5.png" 
+              src="/lovable-uploads/e50b3560-e33b-4dd6-a656-80057925c736.png" 
               alt="AnkitXpilot Logo" 
               className="h-8 w-auto mr-2" 
             />
@@ -148,6 +150,11 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
               
               <DropdownMenuSeparator />
               
+              <DropdownMenuItem onClick={() => setIsMemoryManagerOpen(true)}>
+                <MemoryStick className="mr-2 h-4 w-4" />
+                <span>Manage Memories</span>
+              </DropdownMenuItem>
+              
               <DropdownMenuItem onClick={() => setIsShareOpen(true)}>
                 <Share2 className="mr-2 h-4 w-4" />
                 <span>Share Chat</span>
@@ -161,13 +168,6 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
               <DropdownMenuItem onClick={() => setIsTempChatOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 <span>New Temporary Chat</span>
-              </DropdownMenuItem>
-              
-              <DropdownMenuSeparator />
-              
-              <DropdownMenuItem onClick={() => setIsClearMemoryOpen(true)}>
-                <Trash className="mr-2 h-4 w-4" />
-                <span>Clear Memory</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -229,6 +229,12 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {/* Memory Manager */}
+      <MemoryManager 
+        isOpen={isMemoryManagerOpen} 
+        onClose={() => setIsMemoryManagerOpen(false)} 
+      />
     </>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { sendMessage } from '../services/geminiService';
 import { saveChats, loadChats, saveLearnedData, loadLearnedData } from '../utils/localStorage';
@@ -38,6 +37,7 @@ interface ChatContextType {
   shareSession: (sessionId: string) => Promise<string>;
   setIsTemporaryMode: (isTemporary: boolean) => void;
   clearLearnedData: () => void;
+  updateLearnedData: (newData: LearnedDataType) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -58,13 +58,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isTemporaryMode, setIsTemporaryMode] = useState<boolean>(false);
   const [learnedData, setLearnedData] = useState<LearnedDataType>({});
 
-  // Load sessions and learned data from localStorage
   useEffect(() => {
     const savedSessions = loadChats();
     const savedLearnedData = loadLearnedData();
     
     if (savedSessions.length > 0) {
-      // Filter out temporary sessions when loading
       const permanentSessions = savedSessions.filter(session => !session.isTemporary);
       setSessions(permanentSessions);
       setCurrentSession(permanentSessions[0] || null);
@@ -77,32 +75,25 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Save sessions to localStorage whenever they change
   useEffect(() => {
     if (sessions.length > 0) {
-      // Only save non-temporary sessions
       const permanentSessions = sessions.filter(session => !session.isTemporary);
       saveChats(permanentSessions);
     }
   }, [sessions]);
 
-  // Save learned data to localStorage whenever it changes
   useEffect(() => {
     if (Object.keys(learnedData).length > 0) {
       saveLearnedData(learnedData);
     }
   }, [learnedData]);
 
-  // Extract key entities from a message to learn from
   const extractEntities = (text: string): Record<string, string[]> => {
-    // This is a simple implementation - in a production app, you'd use NLP for better entity extraction
     const newData: Record<string, string[]> = {};
     
-    // Extract potential topics (simple approach)
     const words = text.toLowerCase().split(/\s+/);
     const stopWords = ['a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'with', 'without', 'about', 'from'];
     
-    // Look for programming languages or technologies
     const techKeywords = ['javascript', 'python', 'react', 'node', 'typescript', 'java', 'css', 'html', 'docker', 'aws', 'sql', 'database'];
     const foundTech = techKeywords.filter(tech => text.toLowerCase().includes(tech));
     
@@ -110,19 +101,17 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       newData['technologies'] = foundTech;
     }
     
-    // Look for potential interests based on question patterns
     if (text.toLowerCase().includes('how to') || text.toLowerCase().includes('explain')) {
       const interests = words
         .filter(word => word.length > 4 && !stopWords.includes(word))
         .filter(word => !techKeywords.includes(word))
-        .slice(0, 3); // Limit to 3 potential interests
+        .slice(0, 3);
       
       if (interests.length > 0) {
         newData['interests'] = interests;
       }
     }
     
-    // Look for potential name
     if (text.toLowerCase().includes('my name is') || text.toLowerCase().includes('i am called')) {
       const nameMatch = text.match(/my name is (\w+)|i am called (\w+)/i);
       if (nameMatch) {
@@ -134,33 +123,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return newData;
   };
 
-  // Update the learned data with new information
-  const updateLearnedData = (message: string) => {
-    if (isTemporaryMode) return; // Don't learn in temporary mode
-    
-    const extractedData = extractEntities(message);
-    
-    if (Object.keys(extractedData).length === 0) return;
-    
-    setLearnedData(prevData => {
-      const newData = { ...prevData };
-      
-      // Merge the new data with existing data
-      Object.entries(extractedData).forEach(([key, values]) => {
-        if (!newData[key]) {
-          newData[key] = [];
-        }
-        
-        // Add unique values only
-        values.forEach(value => {
-          if (!newData[key].includes(value)) {
-            newData[key].push(value);
-          }
-        });
-      });
-      
-      return newData;
-    });
+  const updateLearnedData = (newData: LearnedDataType) => {
+    setLearnedData(newData);
+    saveLearnedData(newData);
   };
 
   const createNewSession = (isTemporary = false) => {
@@ -176,7 +141,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSessions(prevSessions => [newSession, ...prevSessions]);
     setCurrentSession(newSession);
     
-    // If creating a temporary chat, switch to temporary mode
     if (isTemporary) {
       setIsTemporaryMode(true);
     }
@@ -194,7 +158,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSessions(prevSessions => {
       const filteredSessions = prevSessions.filter(s => s.id !== sessionId);
       
-      // If we're deleting the current session, switch to another one
       if (currentSession?.id === sessionId) {
         if (filteredSessions.length > 0) {
           setCurrentSession(filteredSessions[0]);
@@ -222,13 +185,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const session = sessions.find(s => s.id === sessionId) || currentSession;
     if (!session) return "No session to share";
     
-    // Generate a simple text representation of the chat
     const chatText = session.messages.map(msg => {
       const sender = msg.sender === 'user' ? 'You' : 'AnkitXpilot';
       return `${sender}: ${msg.text}`;
     }).join('\n\n');
     
-    // In a real app, you might create a shareable link or use the Web Share API
     try {
       await navigator.clipboard.writeText(chatText);
       return "Chat copied to clipboard";
@@ -245,12 +206,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
 
     try {
-      // Learn from the user message if not in temporary mode
       if (!isTemporaryMode) {
         updateLearnedData(message);
       }
       
-      // Add user message to the current session
       const userMessage: MessageType = {
         id: crypto.randomUUID(),
         text: message,
@@ -260,7 +219,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const updatedMessages = [...currentSession.messages, userMessage];
       
-      // Check for special queries
       let responseText = '';
       
       if (message.toLowerCase().includes("who made you") || 
@@ -274,7 +232,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       ) {
         responseText = "Ankit is a web developer and AI Trainer who knows various coding languages. To know more about him reach https://ankit404developer.github.io/About/";
       } else {
-        // Send message to the AI API with the thinkDeeply flag and learned data
         responseText = await sendMessage(
           message, 
           generateCode, 
@@ -283,13 +240,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
           isTemporaryMode
         );
         
-        // Add emojis to response if appropriate (non-code responses)
         if (!generateCode && !responseText.includes("```")) {
           responseText = addEmojisToResponse(responseText);
         }
       }
 
-      // Add assistant response
       const assistantMessage: MessageType = {
         id: crypto.randomUUID(),
         text: responseText,
@@ -300,14 +255,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const finalMessages = [...updatedMessages, assistantMessage];
       
-      // Generate a title for new chats based on the first message
       let title = currentSession.title;
       if (currentSession.messages.length === 0 && !currentSession.isTemporary) {
-        // Generate title from first message (max 30 chars)
         title = message.length > 30 ? message.substring(0, 27) + '...' : message;
       }
       
-      // Update the current session with new messages
       const updatedSession = {
         ...currentSession,
         messages: finalMessages,
@@ -315,7 +267,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedAt: new Date()
       };
       
-      // Update state
       setCurrentSession(updatedSession);
       setSessions(prevSessions => 
         prevSessions.map(s => s.id === currentSession.id ? updatedSession : s)
@@ -332,7 +283,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const regenerateLastResponse = async () => {
     if (!currentSession || currentSession.messages.length < 2) return;
     
-    // Find the last user message
     const messagesReversed = [...currentSession.messages].reverse();
     const lastUserMessageIndex = messagesReversed.findIndex(m => m.sender === 'user');
     
@@ -340,26 +290,20 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const lastUserMessage = messagesReversed[lastUserMessageIndex];
     
-    // Remove the last assistant message
     const newMessages = currentSession.messages.slice(0, -1);
     
-    // Update the session temporarily
     setCurrentSession({
       ...currentSession,
       messages: newMessages
     });
     
-    // Get isCode status from the last assistant message
     const lastAssistantMessage = currentSession.messages[currentSession.messages.length - 1];
     const isCode = lastAssistantMessage.isCode || false;
     
-    // Regenerate the response
     await sendUserMessage(lastUserMessage.text, isCode);
   };
   
-  // Helper function to add emojis to responses
   const addEmojisToResponse = (text: string): string => {
-    // Simple emoji insertion for different types of content
     if (text.toLowerCase().includes("hello") || text.toLowerCase().includes("hi ")) {
       return text.replace(/Hello|Hi /i, match => `${match} 👋 `);
     }
@@ -380,12 +324,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return text.replace(/important/i, match => `${match} ❗ `);
     }
     
-    // For code-related questions
     if (text.toLowerCase().includes("javascript") || text.toLowerCase().includes("code")) {
       return text.replace(/javascript|code/i, match => `${match} 💻 `);
     }
     
-    // For idea or suggestion
     if (text.toLowerCase().includes("idea") || text.toLowerCase().includes("suggest")) {
       return text.replace(/idea|suggest/i, match => `${match} 💡 `);
     }
@@ -408,7 +350,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     clearSessions,
     shareSession,
     setIsTemporaryMode,
-    clearLearnedData: clearLearnedDataHandler
+    clearLearnedData: clearLearnedDataHandler,
+    updateLearnedData
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
