@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageType } from '../../contexts/ChatContext';
 import { parseCodeBlocks, formatTimestamp } from '../../utils/messageParser';
 import CodeBlock from './CodeBlock';
 import { User, Bot, ThumbsUp, ThumbsDown, RefreshCw, Copy, TextSelect } from 'lucide-react';
+import { useTypingEffect } from '../../hooks/use-typing-effect';
 
 interface ChatMessageProps {
   message: MessageType;
@@ -14,9 +15,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onRegenerate }) => {
   const isUser = message.sender === 'user';
   const [isGoodResponse, setIsGoodResponse] = useState<boolean | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showTypingEffect, setShowTypingEffect] = useState(!isUser);
   
   // Parse message content for code blocks
   const contentParts = parseCodeBlocks(message.text);
+  
+  // Use typing effect only for assistant messages that aren't code blocks
+  const { displayedText, isTyping } = useTypingEffect(
+    isUser ? '' : contentParts.find(part => !part.isCode)?.text || '',
+    showTypingEffect ? 15 : 0
+  );
+  
+  // Disable typing effect after initial render
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTypingEffect(false);
+    }, 10000); // Fallback timeout to ensure animation completes
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   const handleCopy = () => {
     navigator.clipboard.writeText(message.text);
@@ -59,28 +76,30 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onRegenerate }) => {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}>
       <div className={`flex gap-2 max-w-[90%] ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-        {/* Avatar - hidden for cleaner UI like the reference */}
-        {false && (
-          <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-            ${isUser ? 'bg-primary text-primary-foreground' : 'bg-zinc-800 text-zinc-300'}`}>
-            {isUser ? <User size={16} /> : <Bot size={16} />}
-          </div>
-        )}
-        
         {/* Message content */}
         <div className={`${isUser ? 'user-message' : 'assistant-message'}`}>
           <div id={`message-${message.id}`}>
-            {contentParts.map((part, index) => (
-              <React.Fragment key={index}>
-                {part.isCode ? (
-                  <CodeBlock code={part.text} />
-                ) : (
-                  <p className="text-balance whitespace-pre-wrap text-sm">
+            {contentParts.map((part, index) => {
+              if (part.isCode) {
+                // Always render code blocks normally
+                return <CodeBlock key={index} code={part.text} />;
+              } else if (!isUser && index === 0 && showTypingEffect) {
+                // Apply typing effect to the first text part of assistant messages
+                return (
+                  <p key={index} className="text-balance whitespace-pre-wrap text-sm">
+                    {makeLinksClickable(isTyping ? displayedText : part.text)}
+                    {isTyping && <span className="cursor animate-pulse">|</span>}
+                  </p>
+                );
+              } else {
+                // Render other content normally
+                return (
+                  <p key={index} className="text-balance whitespace-pre-wrap text-sm">
                     {makeLinksClickable(part.text)}
                   </p>
-                )}
-              </React.Fragment>
-            ))}
+                );
+              }
+            })}
           </div>
           
           <div className="flex justify-between items-center mt-2">
@@ -89,7 +108,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message, onRegenerate }) => {
             </span>
             
             {/* Action buttons for assistant messages */}
-            {!isUser && (
+            {!isUser && !isTyping && (
               <div className="flex gap-1.5">
                 <button 
                   onClick={handleSelectText}

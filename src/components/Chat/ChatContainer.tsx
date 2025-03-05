@@ -77,7 +77,7 @@ const ChatContainer: React.FC = () => {
           ))
         )}
         
-        {/* Show typing indicator when loading */}
+        {/* Hide typing indicator when using our new typing effect */}
         {isLoading && (
           <div className="flex mb-4">
             <div className="assistant-message">
