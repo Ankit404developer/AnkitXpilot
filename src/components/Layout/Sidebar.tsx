@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useChat } from '../../contexts/ChatContext';
-import { MessageSquare, Trash2 } from 'lucide-react';
+import { MessageSquare, Trash2, Clock } from 'lucide-react';
 import { getMessagePreview } from '../../utils/messageParser';
 
 interface SidebarProps {
@@ -39,21 +39,33 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
               const isActive = currentSession?.id === session.id;
               const firstMessage = session.messages.find(m => m.sender === 'user');
               const title = session.title || 'New Chat';
+              const isTemporary = session.isTemporary;
               
               return (
                 <div 
                   key={session.id}
                   className={`group relative flex gap-2 items-center p-2 rounded-md cursor-pointer mb-1 transition-colors ${
                     isActive 
-                      ? 'bg-primary/10 text-foreground' 
+                      ? isTemporary 
+                        ? 'bg-amber-500/10 text-foreground' 
+                        : 'bg-primary/10 text-foreground' 
                       : 'hover:bg-muted text-muted-foreground hover:text-foreground'
                   }`}
                   onClick={() => switchSession(session.id)}
                 >
-                  <MessageSquare size={16} className="flex-shrink-0" />
+                  {isTemporary ? (
+                    <Clock size={16} className="flex-shrink-0 text-amber-500" />
+                  ) : (
+                    <MessageSquare size={16} className="flex-shrink-0" />
+                  )}
                   <div className="flex-1 truncate">
-                    <div className="font-medium text-sm truncate">
+                    <div className="font-medium text-sm truncate flex items-center gap-1">
                       {title}
+                      {isTemporary && (
+                        <span className="text-[10px] bg-amber-500/20 text-amber-300 px-1 rounded">
+                          Temp
+                        </span>
+                      )}
                     </div>
                     {firstMessage && (
                       <div className="text-xs truncate opacity-70">

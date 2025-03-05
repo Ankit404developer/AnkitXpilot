@@ -6,7 +6,7 @@ import ChatInput from './ChatInput';
 import { ChevronDown } from 'lucide-react';
 
 const ChatContainer: React.FC = () => {
-  const { currentSession, isLoading } = useChat();
+  const { currentSession, isLoading, regenerateLastResponse } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Auto-scroll to bottom when messages update
@@ -24,6 +24,15 @@ const ChatContainer: React.FC = () => {
   
   return (
     <div className="flex flex-col h-full bg-black">
+      {/* Temporary chat indicator */}
+      {currentSession.isTemporary && (
+        <div className="bg-amber-700/20 border-b border-amber-700/30 py-2 px-4 text-center">
+          <p className="text-amber-200 text-xs font-medium">
+            Temporary chat mode - This conversation will not be saved
+          </p>
+        </div>
+      )}
+      
       {/* Messages container with auto-scroll */}
       <div className="flex-1 overflow-y-auto p-3 scrollbar-thin">
         {currentSession.messages.length === 0 ? (
@@ -54,8 +63,17 @@ const ChatContainer: React.FC = () => {
             </div>
           </div>
         ) : (
-          currentSession.messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
+          currentSession.messages.map((message, index) => (
+            <ChatMessage 
+              key={message.id} 
+              message={message} 
+              onRegenerate={
+                message.sender === 'assistant' && 
+                index === currentSession.messages.length - 1 
+                  ? regenerateLastResponse 
+                  : undefined
+              }
+            />
           ))
         )}
         

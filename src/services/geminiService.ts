@@ -11,13 +11,25 @@ If someone asks 'Who made you?', always respond with: 'Ankit Pramanik, A Web Dev
 If someone asks 'Who is Ankit?', always respond with: 'Ankit is a web developer and AI Trainer who knows various coding languages. To know more about him reach https://ankit404developer.github.io/About/'
 When generating code, provide well-commented, clean, and efficient solutions.`;
 
-export async function sendMessage(message: string, generateCode = false): Promise<string> {
+// Extended system prompt for "Think Deeply" mode
+const DEEP_THINKING_PROMPT = `${SYSTEM_PROMPT}
+In this interaction, the user has requested a more thoughtful and in-depth response.
+Take your time to explore multiple perspectives, consider edge cases, and provide a comprehensive analysis.
+Your response should be more detailed than usual, thoroughly examining the subject matter.
+Include relevant examples, potential implications, and nuanced considerations in your answer.`;
+
+export async function sendMessage(message: string, generateCode = false, thinkDeeply = false): Promise<string> {
   try {
-    // Add specific instructions for code generation
+    // Add specific instructions for code generation or deep thinking
     let promptText = message;
+    let systemPrompt = SYSTEM_PROMPT;
     
     if (generateCode) {
       promptText = `Please provide only code as a solution to this request. Ensure the code is well-commented, efficient, and follows best practices: ${message}`;
+    }
+    
+    if (thinkDeeply) {
+      systemPrompt = DEEP_THINKING_PROMPT;
     }
     
     console.log('Sending request to API');
@@ -25,19 +37,19 @@ export async function sendMessage(message: string, generateCode = false): Promis
     const response = await axios.post(
       API_URL,
       {
-        model: "anthropic/claude-3-haiku",
+        model: thinkDeeply ? "anthropic/claude-3-opus" : "anthropic/claude-3-haiku",
         messages: [
           {
             role: "system",
-            content: SYSTEM_PROMPT
+            content: systemPrompt
           },
           {
             role: "user",
             content: promptText
           }
         ],
-        temperature: generateCode ? 0.2 : 0.7,
-        max_tokens: 2048
+        temperature: generateCode ? 0.2 : thinkDeeply ? 0.5 : 0.7,
+        max_tokens: thinkDeeply ? 4096 : 2048
       },
       {
         headers: {
