@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useChat } from '../../contexts/ChatContext';
-import { Trash2, X, Save, MemoryStick, Brain } from 'lucide-react';
+import { Trash2, X, Save, MemoryStick } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -68,13 +68,13 @@ const MemoryManager: React.FC<MemoryManagerProps> = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] bg-zinc-900 border-zinc-800">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-white">
-            <Brain size={18} className="text-cyan-400" />
+          <DialogTitle className="flex items-center gap-2">
+            <MemoryStick size={18} />
             Manage AI Memory
           </DialogTitle>
-          <DialogDescription className="text-zinc-400">
+          <DialogDescription>
             Here you can view and delete information I've learned from our conversations.
           </DialogDescription>
         </DialogHeader>
@@ -88,14 +88,14 @@ const MemoryManager: React.FC<MemoryManagerProps> = ({ isOpen, onClose }) => {
           ) : (
             <ScrollArea className="h-[300px] pr-4">
               {Object.entries(editableData).map(([category, values]) => (
-                <div key={category} className="mb-4 border border-zinc-800 rounded-md p-3 bg-zinc-950/50">
+                <div key={category} className="mb-4 border rounded-md p-3">
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-medium text-sm capitalize text-cyan-400">{category}</h3>
+                    <h3 className="font-medium text-sm capitalize">{category}</h3>
                     <Button 
                       variant="ghost" 
                       size="sm" 
                       onClick={() => handleDeleteCategory(category)}
-                      className="h-7 w-7 p-0 text-zinc-400 hover:text-white hover:bg-zinc-800"
+                      className="h-7 w-7 p-0"
                     >
                       <Trash2 size={14} />
                     </Button>
@@ -105,12 +105,12 @@ const MemoryManager: React.FC<MemoryManagerProps> = ({ isOpen, onClose }) => {
                       <Badge 
                         key={index} 
                         variant="secondary"
-                        className="flex items-center gap-1 bg-zinc-800 text-zinc-300 hover:bg-zinc-700"
+                        className="flex items-center gap-1"
                       >
                         {value}
                         <button
                           onClick={() => handleDeleteValue(category, index)}
-                          className="ml-1 rounded-full h-4 w-4 inline-flex items-center justify-center hover:bg-zinc-600"
+                          className="ml-1 rounded-full h-4 w-4 inline-flex items-center justify-center hover:bg-muted"
                         >
                           <X size={10} />
                         </button>
@@ -136,7 +136,7 @@ const MemoryManager: React.FC<MemoryManagerProps> = ({ isOpen, onClose }) => {
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button onClick={handleSaveChanges} className="flex gap-1 items-center bg-cyan-600 hover:bg-cyan-700">
+            <Button onClick={handleSaveChanges} className="flex gap-1 items-center">
               <Save size={14} />
               Save Changes
             </Button>

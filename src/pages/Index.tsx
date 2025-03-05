@@ -13,13 +13,12 @@ const Index = () => {
         toast.success(
           'Welcome to AnkitXpilot!', 
           {
-            description: 'Your AI coding assistant is ready to help. Use the menu to manage memories and chats.',
+            description: 'Your AI coding assistant is ready to help.',
             style: {
               backgroundColor: 'rgba(18, 18, 18, 0.95)',
               color: 'white',
               border: '1px solid #333'
-            },
-            duration: 5000
+            }
           }
         );
         localStorage.setItem('ankitxpilot-visited', 'true');

@@ -39,7 +39,7 @@ const ChatContainer: React.FC = () => {
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="p-6 rounded-2xl max-w-md animate-fade-in bg-zinc-900">
               <div className="flex justify-center mb-4">
-                <img src="/lovable-uploads/803988c1-a688-4419-b8dd-cb377efc94f3.png" alt="AnkitXpilot Logo" className="h-24 w-auto" />
+                <img src="/lovable-uploads/05f99f3c-fe9b-4793-9f67-9083446e0cb5.png" alt="AnkitXpilot Logo" className="h-20 w-auto" />
               </div>
               <h2 className="text-xl font-medium mb-2 text-white">Welcome to AnkitXpilot</h2>
               <p className="text-zinc-400 mb-4">
