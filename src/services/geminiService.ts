@@ -18,7 +18,13 @@ Take your time to explore multiple perspectives, consider edge cases, and provid
 Your response should be more detailed than usual, thoroughly examining the subject matter.
 Include relevant examples, potential implications, and nuanced considerations in your answer.`;
 
-export async function sendMessage(message: string, generateCode = false, thinkDeeply = false): Promise<string> {
+export async function sendMessage(
+  message: string, 
+  generateCode = false, 
+  thinkDeeply = false, 
+  learnedData: Record<string, string[]> = {},
+  isTemporary = false
+): Promise<string> {
   try {
     // Add specific instructions for code generation or deep thinking
     let promptText = message;
@@ -30,6 +36,19 @@ export async function sendMessage(message: string, generateCode = false, thinkDe
     
     if (thinkDeeply) {
       systemPrompt = DEEP_THINKING_PROMPT;
+    }
+    
+    // Include learned data in the system prompt if not in temporary mode
+    if (!isTemporary && Object.keys(learnedData).length > 0) {
+      const learnedDataPrompt = `
+I've learned the following information about the user or their interests:
+${Object.entries(learnedData)
+  .map(([key, values]) => `- ${key}: ${values.join(', ')}`)
+  .join('\n')}
+
+Use this information to personalize your response when relevant, but don't explicitly mention that you've "learned" this unless asked about your memory or capabilities.`;
+      
+      systemPrompt = `${systemPrompt}\n\n${learnedDataPrompt}`;
     }
     
     console.log('Sending request to API');
