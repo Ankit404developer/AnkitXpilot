@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { sendMessage } from '../services/geminiService';
 import { saveChats, loadChats, saveLearnedData, loadLearnedData } from '../utils/localStorage';
@@ -128,6 +129,30 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     saveLearnedData(newData);
   };
 
+  // Fixed function to process the user message and update learned data
+  const processAndUpdateLearnedData = (message: string) => {
+    if (!isTemporaryMode) {
+      const extractedData = extractEntities(message);
+      if (Object.keys(extractedData).length > 0) {
+        const updatedData = { ...learnedData };
+        
+        // Merge the extracted data with existing data
+        Object.entries(extractedData).forEach(([category, values]) => {
+          if (updatedData[category]) {
+            // Add new values without duplicates
+            const existingValues = new Set(updatedData[category]);
+            values.forEach(v => existingValues.add(v));
+            updatedData[category] = Array.from(existingValues);
+          } else {
+            updatedData[category] = values;
+          }
+        });
+        
+        updateLearnedData(updatedData);
+      }
+    }
+  };
+
   const createNewSession = (isTemporary = false) => {
     const newSession: ChatSessionType = {
       id: crypto.randomUUID(),
@@ -206,9 +231,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
 
     try {
-      if (!isTemporaryMode) {
-        updateLearnedData(message);
-      }
+      // Update the learned data from the user message
+      processAndUpdateLearnedData(message);
       
       const userMessage: MessageType = {
         id: crypto.randomUUID(),
