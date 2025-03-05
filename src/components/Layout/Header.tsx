@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
-import { Bot, Menu, X, Plus, Moon, Sun, Laptop, Share2, Clock, Brain, Trash, MemoryStick } from 'lucide-react';
+import { Bot, Menu, X, Plus, Moon, Sun, Laptop, Share2, Clock } from 'lucide-react';
 import { useChat } from '../../contexts/ChatContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { toast } from 'sonner';
-import MemoryManager from '../Memory/MemoryManager';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,55 +28,20 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
-  const { 
-    createNewSession, 
-    currentSession, 
-    shareSession, 
-    isTemporaryMode, 
-    setIsTemporaryMode,
-    clearLearnedData 
-  } = useChat();
+  const { createNewSession, currentSession, shareSession } = useChat();
   const { theme, setTheme } = useTheme();
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isTempChatOpen, setIsTempChatOpen] = useState(false);
-  const [isClearMemoryOpen, setIsClearMemoryOpen] = useState(false);
-  const [isMemoryManagerOpen, setIsMemoryManagerOpen] = useState(false);
   
   const handleNewChat = () => {
     createNewSession();
-    if (isTemporaryMode) {
-      setIsTemporaryMode(false);
-    }
   };
   
   const handleTemporaryChat = () => {
     createNewSession(true);
     setIsTempChatOpen(false);
     toast.success("Temporary chat started", {
-      description: "This conversation won't be saved and I won't remember the context after you leave"
-    });
-  };
-  
-  const handleToggleTemporaryMode = () => {
-    const newMode = !isTemporaryMode;
-    setIsTemporaryMode(newMode);
-    
-    if (newMode) {
-      toast.success("Temporary mode enabled", {
-        description: "I won't learn from this conversation"
-      });
-    } else {
-      toast.success("Learning mode enabled", {
-        description: "I'll remember useful information from our conversation"
-      });
-    }
-  };
-  
-  const handleClearMemory = () => {
-    clearLearnedData();
-    setIsClearMemoryOpen(false);
-    toast.success("Memory cleared", {
-      description: "I've forgotten all learned information"
+      description: "This conversation won't be saved after you leave"
     });
   };
   
@@ -105,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
           
           <div className="flex items-center ml-2 md:ml-0">
             <img 
-              src="/lovable-uploads/e50b3560-e33b-4dd6-a656-80057925c736.png" 
+              src="/lovable-uploads/05f99f3c-fe9b-4793-9f67-9083446e0cb5.png" 
               alt="AnkitXpilot Logo" 
               className="h-8 w-auto mr-2" 
             />
@@ -114,14 +78,6 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
         </div>
         
         <div className="flex items-center gap-2">
-          {/* Temporary Mode Indicator */}
-          {isTemporaryMode && (
-            <span className="hidden sm:flex text-xs bg-amber-500/20 text-amber-400 py-1 px-2 rounded-full items-center gap-1">
-              <Clock size={12} />
-              Temporary Mode
-            </span>
-          )}
-          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
@@ -150,24 +106,14 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
               
               <DropdownMenuSeparator />
               
-              <DropdownMenuItem onClick={() => setIsMemoryManagerOpen(true)}>
-                <MemoryStick className="mr-2 h-4 w-4" />
-                <span>Manage Memories</span>
-              </DropdownMenuItem>
-              
               <DropdownMenuItem onClick={() => setIsShareOpen(true)}>
                 <Share2 className="mr-2 h-4 w-4" />
                 <span>Share Chat</span>
               </DropdownMenuItem>
               
-              <DropdownMenuItem onClick={handleToggleTemporaryMode}>
-                <Clock className="mr-2 h-4 w-4" />
-                <span>{isTemporaryMode ? "Disable Temporary Mode" : "Enable Temporary Mode"}</span>
-              </DropdownMenuItem>
-              
               <DropdownMenuItem onClick={() => setIsTempChatOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                <span>New Temporary Chat</span>
+                <Clock className="mr-2 h-4 w-4" />
+                <span>Start Temporary Chat</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -204,7 +150,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Start Temporary Chat</AlertDialogTitle>
             <AlertDialogDescription>
-              Temporary chats are not saved to your chat history and I won't learn from our conversation. This helps maintain privacy for sensitive discussions.
+              Temporary chats are not saved to your chat history and will be lost when you close the app or start a new chat.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -213,28 +159,6 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, toggleSidebar }) => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      
-      {/* Clear Memory Dialog */}
-      <AlertDialog open={isClearMemoryOpen} onOpenChange={setIsClearMemoryOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Clear Memory</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will clear all information I've learned about you across all conversations. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleClearMemory}>Clear Memory</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      
-      {/* Memory Manager */}
-      <MemoryManager 
-        isOpen={isMemoryManagerOpen} 
-        onClose={() => setIsMemoryManagerOpen(false)} 
-      />
     </>
   );
 };
