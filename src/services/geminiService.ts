@@ -53,15 +53,6 @@ Use this information to personalize your response when relevant, but don't expli
     
     console.log('Sending request to API');
     
-    // Mock response for development/testing purposes
-    // This helps prevent API errors during development
-    const mockResponse = {
-      role: "assistant",
-      content: "This is a mock response. In production, this would be a real response from the AI model. The API connection is currently being fixed."
-    };
-
-    // In a real production environment, uncomment and use the actual API call
-    /*
     const response = await axios.post(
       API_URL,
       {
@@ -87,6 +78,9 @@ Use this information to personalize your response when relevant, but don't expli
       }
     );
     
+    console.log('Received response from API');
+    
+    // Extract text from the response
     if (response.data && 
         response.data.choices && 
         response.data.choices[0] && 
@@ -94,11 +88,10 @@ Use this information to personalize your response when relevant, but don't expli
         response.data.choices[0].message.content) {
       
       return response.data.choices[0].message.content;
+    } else {
+      console.error('Unexpected API response structure:', response.data);
+      return 'I received an unexpected response format. Please try again.';
     }
-    */
-    
-    // For now, return a mock response to prevent errors
-    return mockResponse.content;
     
   } catch (error) {
     console.error('Error calling API:', error);
