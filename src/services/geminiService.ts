@@ -54,27 +54,21 @@ Use this information to personalize your response when relevant, but don't expli
     console.log('Sending request to API');
     
     // Create the request body according to Gemini API format
+    // Note: Gemini API doesn't use systemInstruction directly, incorporating it into the first message
     const requestBody = {
       contents: [
         {
+          role: "system",
+          parts: [{ text: systemPrompt }]
+        },
+        {
           role: "user",
-          parts: [
-            {
-              text: promptText
-            }
-          ]
+          parts: [{ text: promptText }]
         }
       ],
       generationConfig: {
         temperature: generateCode ? 0.2 : thinkDeeply ? 0.5 : 0.7,
         maxOutputTokens: thinkDeeply ? 4096 : 2048
-      },
-      systemInstruction: {
-        parts: [
-          {
-            text: systemPrompt
-          }
-        ]
       }
     };
     
