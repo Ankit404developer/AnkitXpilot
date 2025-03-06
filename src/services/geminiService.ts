@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const API_KEY = 'AIzaSyAi_sRJ5o_Iic5g99BIbiPd7rTUAUKxiF8'; // New Gemini API key
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent';
 
 // Default system prompt that instructs the model about its persona
 const SYSTEM_PROMPT = `You are AnkitXpilot, a helpful and knowledgeable AI assistant created by Ankit Pramanik. 
@@ -79,12 +79,11 @@ Use this information to personalize your response when relevant, but don't expli
     };
     
     const response = await axios.post(
-      API_URL,
+      `${API_URL}?key=${API_KEY}`,
       requestBody,
       {
         headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': API_KEY
+          'Content-Type': 'application/json'
         }
       }
     );
